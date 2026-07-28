@@ -1,0 +1,44 @@
+name: Bug 报告
+description: 报告可以稳定复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: 请勿在公开 Issue 中提交密钥、私人源代码或未修复漏洞。
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 实际发生了什么？你原本期望什么？
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开……
+        2. 选择……
+        3. 看到……
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Code Compare 版本
+      placeholder: 例如 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 运行环境
+      placeholder: 例如 macOS 15 arm64 / Windows 11 x64
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 补充信息
+      description: 可提供已去除敏感信息的截图或日志。

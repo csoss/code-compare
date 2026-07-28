@@ -1,0 +1,12 @@
+node_modules/
+out/
+release/
+.idea/
+.vscode/
+.DS_Store
+*.log
+*.local
+.env
+.env.*
+!.env.example
+coverage/
