@@ -7,6 +7,11 @@ Code Compare 是一款快速、注重隐私且完全离线运行的文件夹与�
 
 > 项目目前处于早期阶段。欢迎试用、报告问题和参与改进。
 
+## 下载
+
+请前往 [GitHub Releases](https://github.com/csoss/code-compare/releases/latest)
+下载最新的 macOS 或 Windows 安装包。
+
 ## 功能
 
 - 递归扫描并对比两个文件夹

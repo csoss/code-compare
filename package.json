@@ -48,6 +48,7 @@
   "build": {
     "appId": "com.codecompare.desktop",
     "productName": "Code Compare",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "directories": {
       "output": "release"

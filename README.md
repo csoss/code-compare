@@ -9,6 +9,11 @@ remote service.
 > Code Compare is at an early stage. Feedback, bug reports, and contributions
 > are welcome.
 
+## Download
+
+Download the latest installer for macOS or Windows from
+[GitHub Releases](https://github.com/csoss/code-compare/releases/latest).
+
 ## Features
 
 - Recursively scan and compare two folders
