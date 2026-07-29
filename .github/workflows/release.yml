@@ -14,18 +14,26 @@ concurrency:
 
 jobs:
   macos:
-    name: Package macOS
-    runs-on: macos-latest
+    name: Package macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15-intel
+            arch: x64
+          - os: macos-15
+            arch: arm64
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22.12
           cache: npm
@@ -36,13 +44,13 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build universal macOS packages
-        run: npm run package:mac -- --universal
+      - name: Build macOS packages
+        run: npm run package:mac -- --${{ matrix.arch }}
 
       - name: Upload macOS packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: macos-packages
+          name: macos-${{ matrix.arch }}-packages
           if-no-files-found: error
           retention-days: 7
           path: |
@@ -50,16 +58,20 @@ jobs:
             release/*-mac-*.zip
 
   windows:
-    name: Package Windows
+    name: Package Windows (${{ matrix.arch }})
     runs-on: windows-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, arm64]
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22.12
           cache: npm
@@ -71,12 +83,12 @@ jobs:
         run: npm test
 
       - name: Build Windows installers
-        run: npm run package:win
+        run: npm run package:win -- --${{ matrix.arch }}
 
       - name: Upload Windows installers
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: windows-packages
+          name: windows-${{ matrix.arch }}-packages
           if-no-files-found: error
           retention-days: 7
           path: release/*.exe
@@ -90,7 +102,7 @@ jobs:
 
     steps:
       - name: Download packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: release
           merge-multiple: true
