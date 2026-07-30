@@ -52,10 +52,10 @@ jobs:
           set -o pipefail
           {
             npm run build
-            npx electron-builder --mac zip --${{ matrix.arch }}
+            npx electron-builder --mac zip --${{ matrix.arch }} --publish never
 
             for attempt in 1 2 3; do
-              if npx electron-builder --mac dmg --${{ matrix.arch }}; then
+              if npx electron-builder --mac dmg --${{ matrix.arch }} --publish never; then
                 exit 0
               fi
               if [ "$attempt" -lt 3 ]; then
@@ -83,6 +83,8 @@ jobs:
             category="builder-tool-cannot-execute"
           elif grep -Eqi 'ERR_ELECTRON_BUILDER_BINARIES_DOWNLOAD|RequestError|download.*failed' package.log; then
             category="builder-download-failed"
+          elif grep -Eqi 'GitHub Personal Access Token is not set|GH_TOKEN.*not set' package.log; then
+            category="implicit-publish-token-missing"
           elif grep -Eqi 'Resource busy' package.log; then
             category="dmg-resource-busy"
           elif grep -Eqi 'Operation not permitted' package.log; then
@@ -147,7 +149,7 @@ jobs:
         run: |
           npm run build 2>&1 | Tee-Object -FilePath package.log
           if ($LASTEXITCODE -eq 0) {
-            npx electron-builder --win nsis --${{ matrix.arch }} 2>&1 |
+            npx electron-builder --win nsis --${{ matrix.arch }} --publish never 2>&1 |
               Tee-Object -FilePath package.log -Append
           }
           if ($LASTEXITCODE -ne 0) {
@@ -172,6 +174,8 @@ jobs:
             $category = 'builder-tool-cannot-execute'
           } elseif ($content -match 'ERR_ELECTRON_BUILDER_BINARIES_DOWNLOAD|RequestError|download.*failed') {
             $category = 'builder-download-failed'
+          } elseif ($content -match 'GitHub Personal Access Token is not set|GH_TOKEN.*not set') {
+            $category = 'implicit-publish-token-missing'
           } elseif ($content -match 'not a valid zip file') {
             $category = 'nsis-input-archive-invalid'
           } elseif ($content -match 'Cannot create symbolic link') {
