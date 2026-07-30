@@ -79,12 +79,7 @@ jobs:
             category="required-file-or-command-missing"
           fi
           echo "::error title=macOS ${{ matrix.arch }} packaging diagnostic::Category: $category"
-          {
-            echo "### macOS ${{ matrix.arch }} packaging failure"
-            echo '```text'
-            tail -n 100 package.log
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "macOS ${{ matrix.arch }} packaging diagnostic category: \`$category\`" >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
       - name: Upload macOS packages
@@ -162,10 +157,7 @@ jobs:
             $category = 'required-file-or-command-missing'
           }
           Write-Output "::error title=Windows ${{ matrix.arch }} packaging diagnostic::Category: $category"
-          Add-Content $env:GITHUB_STEP_SUMMARY "### Windows ${{ matrix.arch }} packaging failure"
-          Add-Content $env:GITHUB_STEP_SUMMARY '```text'
-          Get-Content package.log -Tail 100 | Add-Content $env:GITHUB_STEP_SUMMARY
-          Add-Content $env:GITHUB_STEP_SUMMARY '```'
+          Add-Content $env:GITHUB_STEP_SUMMARY "Windows ${{ matrix.arch }} packaging diagnostic category: ``$category``"
           exit 1
 
       - name: Upload Windows installers
