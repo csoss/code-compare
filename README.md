@@ -14,6 +14,11 @@ remote service.
 Download the latest installer for macOS or Windows from
 [GitHub Releases](https://github.com/csoss/code-compare/releases/latest).
 
+macOS builds use an ad-hoc signature so the app bundle remains internally
+consistent without requiring a paid Apple Developer account. On first launch,
+right-click **Code Compare** and choose **Open**, then confirm **Open**. If macOS
+still blocks it, use **System Settings → Privacy & Security → Open Anyway**.
+
 ## Features
 
 - Recursively scan and compare two folders
@@ -68,9 +73,10 @@ npm run package:mac
 npm run package:win
 ```
 
-Artifacts are written to `release/`. Publicly distributed builds should be
-signed with an Apple Developer ID or a Windows code-signing certificate to
-avoid unknown-developer warnings.
+Artifacts are written to `release/`. macOS builds are ad-hoc signed so users
+can approve them manually. A Developer ID signature and Apple notarization are
+still required to eliminate Gatekeeper warnings completely. Windows builds
+should use a code-signing certificate to avoid unknown-publisher warnings.
 
 ## Privacy and Security
 

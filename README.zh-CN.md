@@ -12,6 +12,10 @@ Code Compare 是一款快速、注重隐私且完全离线运行的文件夹与�
 请前往 [GitHub Releases](https://github.com/csoss/code-compare/releases/latest)
 下载最新的 macOS 或 Windows 安装包。
 
+macOS 安装包使用 ad-hoc 签名，无需付费 Apple Developer 账号即可保持应用签名
+结构完整。首次运行时，请右键点击 **Code Compare**，选择“打开”，然后再次确认
+“打开”。如果仍被拦截，请前往“系统设置 → 隐私与安全性”，选择“仍要打开”。
+
 ## 功能
 
 - 递归扫描并对比两个文件夹
@@ -66,8 +70,9 @@ npm run package:mac
 npm run package:win
 ```
 
-安装包会生成在 `release/`。面向最终用户分发时，应配置 Apple Developer ID
-或 Windows 代码签名证书，避免系统显示未知开发者警告。
+安装包会生成在 `release/`。macOS 构建使用 ad-hoc 签名，用户可以手动授权
+运行；如需完全消除 Gatekeeper 警告，仍需 Developer ID 签名和 Apple 公证。
+Windows 构建建议配置代码签名证书，以避免未知发布者警告。
 
 ## 隐私与安全
 
