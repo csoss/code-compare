@@ -56,6 +56,29 @@ jobs:
         if: steps.package.outcome == 'failure'
         shell: bash
         run: |
+          category="unclassified"
+          if grep -Eqi 'status code 403|HttpError: 403|response status 403' package.log; then
+            category="download-http-403"
+          elif grep -Eqi 'status code 404|HttpError: 404|response status 404' package.log; then
+            category="download-http-404"
+          elif grep -Eqi 'ENOSPC|No space left on device' package.log; then
+            category="runner-disk-full"
+          elif grep -Eqi 'Application entry file .* does not exist|Cannot find module' package.log; then
+            category="application-entry-missing"
+          elif grep -Eqi 'ERR_ELECTRON_BUILDER_CANNOT_EXECUTE|cannot execute' package.log; then
+            category="builder-tool-cannot-execute"
+          elif grep -Eqi 'ERR_ELECTRON_BUILDER_BINARIES_DOWNLOAD|RequestError|download.*failed' package.log; then
+            category="builder-download-failed"
+          elif grep -Eqi 'hdiutil|dmgbuild' package.log; then
+            category="dmg-generation-failed"
+          elif grep -Eqi 'code.?sign|identity|certificate|notari' package.log; then
+            category="code-signing-failed"
+          elif grep -Eqi 'EACCES|EPERM|permission denied' package.log; then
+            category="filesystem-permission-denied"
+          elif grep -Eqi 'ENOENT|not found' package.log; then
+            category="required-file-or-command-missing"
+          fi
+          echo "::error title=macOS ${{ matrix.arch }} packaging diagnostic::Category: $category"
           {
             echo "### macOS ${{ matrix.arch }} packaging failure"
             echo '```text'
@@ -115,6 +138,30 @@ jobs:
         if: steps.package.outcome == 'failure'
         shell: pwsh
         run: |
+          $content = Get-Content package.log -Raw
+          $category = 'unclassified'
+          if ($content -match 'status code 403|HttpError: 403|response status 403') {
+            $category = 'download-http-403'
+          } elseif ($content -match 'status code 404|HttpError: 404|response status 404') {
+            $category = 'download-http-404'
+          } elseif ($content -match 'ENOSPC|No space left on device') {
+            $category = 'runner-disk-full'
+          } elseif ($content -match 'Application entry file .* does not exist|Cannot find module') {
+            $category = 'application-entry-missing'
+          } elseif ($content -match 'ERR_ELECTRON_BUILDER_CANNOT_EXECUTE|cannot execute') {
+            $category = 'builder-tool-cannot-execute'
+          } elseif ($content -match 'ERR_ELECTRON_BUILDER_BINARIES_DOWNLOAD|RequestError|download.*failed') {
+            $category = 'builder-download-failed'
+          } elseif ($content -match 'makensis|NSIS') {
+            $category = 'nsis-generation-failed'
+          } elseif ($content -match 'code.?sign|certificate') {
+            $category = 'code-signing-failed'
+          } elseif ($content -match 'EACCES|EPERM|permission denied') {
+            $category = 'filesystem-permission-denied'
+          } elseif ($content -match 'ENOENT|not found') {
+            $category = 'required-file-or-command-missing'
+          }
+          Write-Output "::error title=Windows ${{ matrix.arch }} packaging diagnostic::Category: $category"
           Add-Content $env:GITHUB_STEP_SUMMARY "### Windows ${{ matrix.arch }} packaging failure"
           Add-Content $env:GITHUB_STEP_SUMMARY '```text'
           Get-Content package.log -Tail 100 | Add-Content $env:GITHUB_STEP_SUMMARY
