@@ -335,6 +335,44 @@ button { color: inherit; }
 .search button { display: grid; padding: 2px; border: 0; color: var(--muted); background: transparent; cursor: pointer; }
 
 .file-list { flex: 1; overflow: auto; padding: 0 6px 8px; }
+.tree-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  min-height: 29px;
+  padding: 3px 2px 4px;
+  border-bottom: 1px solid var(--border-soft);
+  background: #15181eeb;
+  backdrop-filter: blur(8px);
+}
+.tree-toolbar > span {
+  min-width: 0;
+  margin-right: auto;
+  padding-left: 6px;
+  overflow: hidden;
+  color: #59616e;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tree-toolbar button {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 5px;
+  color: #8d95a2;
+  background: transparent;
+  font-size: 9px;
+  cursor: pointer;
+}
+.tree-toolbar button:hover:not(:disabled) { color: #d9dde5; background: #292d36; }
+.tree-toolbar button:disabled { opacity: .35; cursor: default; }
 .tree-row {
   width: 100%;
   min-height: 32px;

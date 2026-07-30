@@ -1,6 +1,6 @@
 {
   "name": "code-compare",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A fast, private folder and text comparison tool for macOS and Windows.",
   "private": true,
   "main": "./out/main/main.js",

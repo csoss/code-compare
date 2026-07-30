@@ -722,6 +722,12 @@ function App() {
                     original={activeLeft?.content ?? ''}
                     modified={activeRight?.content ?? ''}
                     theme="code-compare"
+                    loading={(
+                      <div className="center-state">
+                        <LoaderCircle className="spin" size={24} />
+                        <span>正在加载本地编辑器…</span>
+                      </div>
+                    )}
                     onMount={(editor, monaco) => {
                       diffEditor.current = editor
                       monaco.editor.defineTheme('code-compare', {
@@ -865,6 +871,20 @@ function DirectoryTree({
   onExclude: (directoryPath: string) => void
 }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const directoryPaths = useMemo(() => {
+    const paths: string[] = []
+    const visit = (items: TreeNode[]) => {
+      items.forEach((node) => {
+        if (node.kind !== 'directory') return
+        paths.push(node.path)
+        visit(node.children)
+      })
+    }
+    visit(nodes)
+    return paths
+  }, [nodes])
+  const allExpanded = directoryPaths.length > 0 &&
+    directoryPaths.every((directoryPath) => expanded.has(directoryPath))
 
   useEffect(() => {
     const defaults = new Set<string>()
@@ -941,7 +961,32 @@ function DirectoryTree({
     )
   }
 
-  return <>{nodes.map((node) => renderNode(node, 0))}</>
+  return (
+    <>
+      {directoryPaths.length > 0 && (
+        <div className="tree-toolbar">
+          <span>{directoryPaths.length} 个目录</span>
+          <button
+            onClick={() => setExpanded(new Set(directoryPaths))}
+            disabled={allExpanded}
+            title="展开所有目录"
+          >
+            <ChevronDown size={12} />
+            全部展开
+          </button>
+          <button
+            onClick={() => setExpanded(new Set())}
+            disabled={expanded.size === 0}
+            title="折叠所有目录"
+          >
+            <ChevronRight size={12} />
+            全部折叠
+          </button>
+        </div>
+      )}
+      {nodes.map((node) => renderNode(node, 0))}
+    </>
+  )
 }
 
 function SourcePicker({
